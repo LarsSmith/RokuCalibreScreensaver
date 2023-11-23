@@ -1,0 +1,7 @@
+title=Calibre Library Screensaver
+subtitle=Display your Calibre library as a screensaver
+mm_icon_focus_hd=pkg:/images/icons/shelves-icon-HD.png
+mm_icon_focus_sd=pkg:/images/icons/shelves-icon-SD.png
+splash_screen_hd=pkg:/images/icons/shelves-splash-screen-HD.png
+splash_screen_sd=pkg:/images/icons/shelves-splash-screen-SD.png
+splash_color=#000
