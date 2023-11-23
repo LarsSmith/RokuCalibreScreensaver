@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<file original="CalibreScreensaver.brs" source-language="en-US" target-language="en-US" datatype="x-brs">
+	<body>
+		<trans-unit id="0">
+			<source>Loading Covers</source>
+			<target>Loading Covers</target>
+		</trans-unit>
+		<trans-unit id="1">
+			<source>Depends on how many books you have in your library…</source>
+			<target>Depends on how many books you have in your library…</target>
+		</trans-unit>
+		<trans-unit id="2">
+			<source>Calibre Library Not Found. Using sample covers. Check settings.</source>
+			<target>Calibre Library Not Found. Using sample covers. Check settings.</target>
+		</trans-unit>
+	</body>
+</file>
+<file original="CalibreScreensaverSettings.brs" source-language="en-US" target-language="en-US" datatype="x-brs">
+	<body>
+		<trans-unit id="10">
+			<source>Ok</source>
+			<target>Ok</target>
+		</trans-unit>
+		<trans-unit id="100">
+			<source>Calibre Library Source</source>
+			<target>Calibre Library Source</target>
+		</trans-unit>
+		<trans-unit id="101">
+			<source>USB Drive</source>
+			<target>USB Drive</target>
+		</trans-unit>
+		<trans-unit id="102">
+			<source>Calibre Content Server</source>
+			<target>Calibre Content Server</target>
+		</trans-unit>
+		<trans-unit id="103">
+			<source>Calibre Library found</source>
+			<target>Calibre Library found</target>
+		</trans-unit>
+		<trans-unit id="104">
+			<source>No Calibre Library found</source>
+			<target>No Calibre Library found</target>
+		</trans-unit>
+		<trans-unit id="105">
+			<source>Calibre Content Server Address</source>
+			<target>Calibre Content Server Address</target>
+		</trans-unit>
+		<trans-unit id="106">
+			<source>Verifying server</source>
+			<target>Verifying server</target>
+		</trans-unit>
+		<trans-unit id="107">
+			<source>Calibre Content Server Address</source>
+			<target>Calibre Content Server Address</target>
+		<trans-unit id="108">
+			<source>Server not found. Enter an IP address or hostname. For example 192.168.1.5:8080</source>
+			<target>Server not found. Enter an IP address or hostname. For example 192.168.1.5:8080</target>
+		</trans-unit>
+		<trans-unit id="109">
+			<source>No IP Address set</source>
+			<target>No IP Address set</target>
+		</trans-unit>
+		<trans-unit id="200">
+			<source>Scroll Speed</source>
+			<target>Scroll Speed</target>
+		</trans-unit>
+		<trans-unit id="201">
+			<source>Slow</source>
+			<target>Slow</target>
+		</trans-unit>
+		<trans-unit id="202">
+			<source>Medium</source>
+			<target>Medium</target>
+		</trans-unit>
+		<trans-unit id="203">
+			<source>Fast</source>
+			<target>Fast</target>
+		</trans-unit>
+		<trans-unit id="204">
+			<source>Custom</source>
+			<target>Custom</target>
+		</trans-unit>
+		<trans-unit id="205">
+			<source>{0} seconds per cover</source>
+			<target>{0} seconds per cover</target>
+		</trans-unit>
+		<trans-unit id="206">
+			<source>Scroll Speed in Seconds</source>
+			<target>Scroll Speed in Seconds</target>
+		</trans-unit>
+		<trans-unit id="300">
+			<source>Book Cover Size</source>
+			<target>Book Cover Size</target>
+		</trans-unit>
+		<trans-unit id="301">
+			<source>{0} pixels tall</source>
+			<target>{0} pixels tall</target>
+		</trans-unit>
+	</body>
+</file>
+</xliff>
