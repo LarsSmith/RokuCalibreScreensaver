@@ -6,7 +6,7 @@
 
     <children>
         <Rectangle id = "Blocking"
-            translation = '[0,386]'
+            translation = "[0,386]"
             width = "1920"
             height = "308"
             color = "0x000000D0"
