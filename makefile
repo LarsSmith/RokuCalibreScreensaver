@@ -15,9 +15,9 @@
 #    address of your Roku box. (e.g. export ROKU_DEV_TARGET=192.168.1.1.
 #    Set in your this variable in your shell startup (e.g. .bashrc)
 ##########################################################################  
-APPNAME = MyCalibreLibraryScreensaver
+APPNAME = CalibreLibraryScreensaver
 VERSION = 1.0
 #APP_CHECK_DISABLED = true
-ZIP_EXCLUDE= -x \*.pkg -x dist\* -x keys\* -x \*/.\* -x Readme.txt -x .vscode\* -x makefile -x app.mk
+ZIP_EXCLUDE= -x \*.pkg -x dist\* -x keys\* -x \*/.\* -x Readme.txt -x .vscode\* -x .git\* -x makefile -x app.mk
 
 include ./app.mk
