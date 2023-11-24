@@ -6,7 +6,7 @@
 
     <children>
         <Rectangle id = "Blocking"
-            translation = '[0,386]'
+            translation = "[0,386]"
             width = "1920"
             height = "308"
             color = "0x000000D0"
@@ -44,10 +44,11 @@
                             <ContentNode role = "content" />
                         </RadioButtonList>
                     </Group>
-                    <!-- For some bug or reason not documented translation on InfoTip doesn't work -->
-                    <!-- Workarouind is padding using additional nodes -->
-                    <!-- Padding left using a Label node -->
-                    <!-- Padding down using a Label node inside a LayoutGroup. This also allows changing the padding  as focus changes -->
+                    <!-- Positioning a child of LayoutGroup using translation is not allowed -->
+                    <!-- Padding right can be done using an additional node -->
+                    <!-- Padding down could use item spacing before "InfoTip" but then that spacing would apply if any additional nodes were added. -->
+                    <!-- So instead an additional node is used. -->
+                    <!-- In either case, the padding is adjusted as focus changes to align the first line with the focused option -->
                     <Label id = "InfoTipPadLeft" width = "24" />
                     <LayoutGroup id = "InfoTipPadGroup" >
                         <Label id = "InfoTipPadTop" height = "24" />
