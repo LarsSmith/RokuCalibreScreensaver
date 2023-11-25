@@ -26,6 +26,8 @@ function init()
     m.coverInitializationPending = true
 
     'Read the configured scroll speed from the registry
+    'There is a subtle pseudo-bug -- the speed is per cover but since covers vary in width, the speed varies per cover
+    'For a very wide cover, the scrolling speed visibly slows. Perhaps instead the speed should be applied for a fixed width and not the leftmost cover width 
     m.ScrollSpeed = GetRegistryScrollSpeed()
     m.CoverRowAnimation.duration = ConvertScrollSpeedToSeconds(m.ScrollSpeed)
 
@@ -144,7 +146,7 @@ function AddCover() as void
 
     'TODO avoid dupes -- maybe config choice to provide a sequential option? 
     'Randomly select an intended cover
-    intendedCover = m.coverImages[Rnd(m.coverImages.Count() - 1)]
+    intendedCover = m.coverImages[Rnd(m.coverImages.Count()) - 1] 'Rnd generates a integer between 1 and the argument
     'Check cover against other covers in CoverRow
     if intendedCover <> invalid then
         while CheckCoverConflicts(intendedCover)  'cover conflicts
