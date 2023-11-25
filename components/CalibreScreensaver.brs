@@ -26,6 +26,8 @@ function init()
     m.coverInitializationPending = true
 
     'Read the configured scroll speed from the registry
+    'There is a subtle pseudo-bug -- the speed is per cover but since covers vary in width, the speed varies per cover
+    'For a very wide cover, the scrolling speed visibly slows. Perhaps instead the speed should be applied for a fixed width and not the leftmost cover width 
     m.ScrollSpeed = GetRegistryScrollSpeed()
     m.CoverRowAnimation.duration = ConvertScrollSpeedToSeconds(m.ScrollSpeed)
 
