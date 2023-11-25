@@ -144,7 +144,7 @@ function AddCover() as void
 
     'TODO avoid dupes -- maybe config choice to provide a sequential option? 
     'Randomly select an intended cover
-    intendedCover = m.coverImages[Rnd(m.coverImages.Count() - 1)]
+    intendedCover = m.coverImages[Rnd(m.coverImages.Count()) - 1] 'Rnd generates a integer between 1 and the argument
     'Check cover against other covers in CoverRow
     if intendedCover <> invalid then
         while CheckCoverConflicts(intendedCover)  'cover conflicts
