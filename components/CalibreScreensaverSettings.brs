@@ -262,19 +262,19 @@ end function
 
 function FocusScrollSpeed() as void
     if m.ScrollSpeed.itemFocused = m.ENUM_ScrollSpeed_Slow
-        m.InfoTip.text = Substitute(Tr("{0} seconds per cover"), ConvertScrollSpeedToSeconds("slow").ToStr())
+        m.InfoTip.text = Substitute(Tr("About {0} seconds per cover"), ConvertScrollSpeedToSeconds("slow").ToStr())
         m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_ScrollSpeed_Slow
         m.InfoTip.visible = true
     else if m.ScrollSpeed.itemFocused = m.ENUM_ScrollSpeed_Medium
-        m.InfoTip.text = Substitute(Tr("{0} seconds per cover"), ConvertScrollSpeedToSeconds("medium").ToStr())
+        m.InfoTip.text = Substitute(Tr("About {0} seconds per cover"), ConvertScrollSpeedToSeconds("medium").ToStr())
         m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_ScrollSpeed_Medium
         m.InfoTip.visible = true
     else if m.ScrollSpeed.itemFocused = m.ENUM_ScrollSpeed_Fast
-        m.InfoTip.text = Substitute(Tr("{0} seconds per cover"), ConvertScrollSpeedToSeconds("fast").ToStr())
+        m.InfoTip.text = Substitute(Tr("About {0} seconds per cover"), ConvertScrollSpeedToSeconds("fast").ToStr())
         m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_ScrollSpeed_Fast
         m.InfoTip.visible = true
     else if m.ScrollSpeed.itemFocused = m.ENUM_ScrollSpeed_Custom
-        m.InfoTip.text = Substitute(Tr("{0} seconds per cover"), ConvertScrollSpeedToSeconds("custom").ToStr())
+        m.InfoTip.text = Substitute(Tr("About {0} seconds per cover"), ConvertScrollSpeedToSeconds("custom").ToStr())
         m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_ScrollSpeed_Custom
         m.InfoTip.visible = true
     end if

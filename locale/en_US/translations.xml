@@ -83,7 +83,7 @@
 		</trans-unit>
 		<trans-unit id="205">
 			<source>{0} seconds per cover</source>
-			<target>{0} seconds per cover</target>
+			<target>About {0} seconds per cover</target>
 		</trans-unit>
 		<trans-unit id="206">
 			<source>Scroll Speed in Seconds</source>
