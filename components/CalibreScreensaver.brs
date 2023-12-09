@@ -7,7 +7,8 @@ function init()
     m.LoadingDialog.message = Tr("Depends on how many books you have in your library…")
 
     'Load cover height from registry
-    m.COVER_HEIGHT = ConvertBookCoverSizeToPixels(GetRegistryBookCoverSize())
+    m.BookCoverSize = GetRegistryBookCoverSize()
+    m.COVER_HEIGHT = ConvertBookCoverSizeToPixels(m.BookCoverSize)
     m.TOP_PADDING = (1080 - m.COVER_HEIGHT) / 2
     m.COVER_PADDING = 20
 
@@ -26,10 +27,8 @@ function init()
     m.coverInitializationPending = true
 
     'Read the configured scroll speed from the registry
-    'There is a subtle pseudo-bug -- the speed is per cover but since covers vary in width, the speed varies per cover
-    'For a very wide cover, the scrolling speed visibly slows. Perhaps instead the speed should be applied for a fixed width and not the leftmost cover width 
+    'The actual animation speed in seconds is set for each call to SlideCovers()
     m.ScrollSpeed = GetRegistryScrollSpeed()
-    m.CoverRowAnimation.duration = ConvertScrollSpeedToSeconds(m.ScrollSpeed)
 
     'Determine which library source is configured
     LibrarySource = GetRegistryLibrarySource()
@@ -210,17 +209,27 @@ function determineWidth(cover) as boolean 'Set the poster width based on the sca
 end function
 
 function SlideCovers() 'Initializes the animation of the covers sliding
-    'Add another cover. This might add additional covers if the leftmost cover is particularly wide 
+    'Add another cover. This might cascade to add additional covers if the leftmost cover is particularly wide 
     'TODO race condition if add cover needs to add a 2nd cover, then it's not sliding correctly
     AddCover()
 
-    'Shift over the width of the leftmost cover
+    'Use the width of the leftmost cover as the amount to shift
     leftmostCover = m.CoverRow.getChild(0)
     xShift = leftmostCover.width + m.COVER_PADDING
-
-    'TODO to make up for missed sliding, maybe we should set newX absolutely instead of relative
-    'Or group all the covers and animate the whole group -- but then remove the leftmost element and reset translation at the same time??
     m.CoverRowAnimationInterpolator.keyValue = [m.CoverRow.translation, [0 - xShift, m.TOP_PADDING]]
+    'Adjust the slide speed based on a general average number of covers visible
+    'Assume 3 covers for cover size large, 4 covers for cover size medium, 6 covers for cover size small
+    'This fixes a pseudo-bug where the width of the cover affects how quickly it slides
+    if m.BookCoverSize = "small"
+        leftmostCoverSizeRatio = leftmostCover.width / (1920 / 5)
+    else if m.BookCoverSize = "medium"
+        leftmostCoverSizeRatio = leftmostCover.width / (1920 / 4)
+    else if m.BookCoverSize = "large"
+        leftmostCoverSizeRatio = leftmostCover.width / (1920 / 3)
+    end if
+    'Now set the animation duration based on the size of the left-most cover as a ratio to 'normal size' multiplied by the configured scroll speed
+    m.CoverRowAnimation.duration = leftmostCoverSizeRatio * ConvertScrollSpeedToSeconds(m.ScrollSpeed)
+
     m.CoverRowAnimation.control = "start"
 end function
 
