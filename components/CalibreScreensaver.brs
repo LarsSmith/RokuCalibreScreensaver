@@ -2,6 +2,9 @@
 'TODO add background image options
 
 function init()
+    m.top.showSettingsFlag = false
+    m.top.backgroundURI = "pkg:/images/gradient.png"
+
     m.LoadingDialog = m.top.findNode("LoadingDialog")
     m.LoadingDialog.title = Tr("Loading Covers")
     m.LoadingDialog.message = Tr("Depends on how many books you have in your library…")
@@ -188,6 +191,7 @@ function OnCoverImageLoaded()
             AddCover()
         else if m.coverInitializationPending 'Still initializing and now has sufficient covers to begin animating
             m.coverInitializationPending = false
+            m.top.setFocus(true)
             SlideCovers()
         else
             'AddCover is complete and there are enough covers
@@ -234,8 +238,10 @@ function SlideCovers() 'Initializes the animation of the covers sliding
 end function
 
 function AnimationComplete() as void
-    if m.CoverRowAnimation.state <> "stopped" 
+    if m.CoverRowAnimation.state = "running" 
         return
+    else if m.CoverRowAnimation.state = "paused"
+        m.CoverRowAnimation.control = "resume"
     else 'Animation is complete
 
         'Cleanup the leftmost cover (which is now off the left edge of the screen)
@@ -246,4 +252,25 @@ function AnimationComplete() as void
         'And restart the sliding animation
         SlideCovers()
     end if
+end function
+
+function onKeyEvent(key as String, press as Boolean) as Boolean
+    if press then
+        if key = "options" then
+            'Can we show the settings screen?
+            print "options key pressed"
+            m.top.showSettingsFlag = true
+        else if key = "right" then
+            if m.CoverRowAnimation.state = "running" 
+                m.CoverRowAnimation.duration = 0.3
+                m.CoverRowAnimation.control = "pause"
+            end if
+        end if
+    end if
+    return true
+end function
+
+function reinitialize() as void
+    init()
+    
 end function

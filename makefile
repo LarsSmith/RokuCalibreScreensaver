@@ -16,7 +16,7 @@
 #    Set in your this variable in your shell startup (e.g. .bashrc)
 ##########################################################################  
 APPNAME = CalibreLibraryScreensaver
-VERSION = 1.2
+VERSION = 1.3
 #APP_CHECK_DISABLED = true
 ZIP_EXCLUDE= -x \*.pkg -x dist\* -x keys\* -x \*/.\* -x Readme.txt -x .vscode\* -x .git\* -x makefile -x app.mk
 

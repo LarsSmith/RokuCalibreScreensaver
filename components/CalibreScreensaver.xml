@@ -5,6 +5,9 @@
     <script type="text/brightscript" uri = "pkg:/components/CalibreScreensaver.brs"/>
     <script type="text/brightscript" uri = "pkg:/components/Utilities.brs"/>
 
+	<interface>
+		<field id="showSettingsFlag" type="bool" value="false"/>
+	</interface>
 
     <children>
         <LayoutGroup id = "CoverRow"
