@@ -249,3 +249,15 @@ function AnimationComplete() as void
         SlideCovers()
     end if
 end function
+
+function onKeyEvent(key as String, press as Boolean) as Boolean
+    if press then
+        if key = "right" then
+            if m.CoverRowAnimation.state = "running" 
+                m.CoverRowAnimation.duration = 0.3
+                m.CoverRowAnimation.control = "pause"
+            end if
+        end if
+    end if
+    return true
+end function
