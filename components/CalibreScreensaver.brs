@@ -2,6 +2,8 @@
 'TODO add background image options
 
 function init()
+    m.top.getScene().backgroundURI = "pkg:/images/gradient.png"
+    
     m.LoadingDialog = m.top.findNode("LoadingDialog")
     m.LoadingDialog.title = Tr("Loading Covers")
     m.LoadingDialog.message = Tr("Depends on how many books you have in your library…")
