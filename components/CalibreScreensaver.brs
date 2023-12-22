@@ -236,8 +236,10 @@ function SlideCovers() 'Initializes the animation of the covers sliding
 end function
 
 function AnimationComplete() as void
-    if m.CoverRowAnimation.state <> "stopped" 
+    if m.CoverRowAnimation.state = "running" 
         return
+    else if m.CoverRowAnimation.state = "paused"
+        m.CoverRowAnimation.control = "resume"
     else 'Animation is complete
 
         'Cleanup the leftmost cover (which is now off the left edge of the screen)
@@ -251,13 +253,15 @@ function AnimationComplete() as void
 end function
 
 function onKeyEvent(key as String, press as Boolean) as Boolean
+    handled = false
     if press then
         if key = "right" then
             if m.CoverRowAnimation.state = "running" 
                 m.CoverRowAnimation.duration = 0.3
                 m.CoverRowAnimation.control = "pause"
+                handled = true
             end if
         end if
     end if
-    return true
+    return handled
 end function

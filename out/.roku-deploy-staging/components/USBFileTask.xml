@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name = "USBFileTask" extends = "Task" >
+    <interface>
+        <field id = "loadCoverImagesTask" type = "boolean" />
+        <field id = "locateLibraryTask" type = "boolean" />
+        <field id = "loadCoverImageTaskDone" type = "boolean" />
+        <field id = "locateLibraryTaskDone" type = "boolean" />
+        <field id = "coverImages" type = "array" />
+    </interface>
+
+    <script type = "text/brightscript" uri = "pkg:/components/USBFileTask.brs"/>
+</component>
