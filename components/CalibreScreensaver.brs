@@ -1,9 +1,23 @@
 'update readme
-'TODO add background image options
+'TODO implement sorting options
 
 function init()
-    m.top.getScene().backgroundURI = "pkg:/images/gradient.png"
-    
+    m.BackgroundPoster = m.top.findNode("BackgroundPoster")
+    backgroundImage = GetRegistryBackgroundImage()
+    if backgroundImage = "none" then
+        m.BackgroundPoster.visible = false
+    else if backgroundImage = "gradient" then
+        'Use the default gradient from the package
+        m.BackgroundPoster.failedBitmapUri = ""
+        m.BackgroundPoster.uri = "pkg:/images/gradient.png"
+        m.BackgroundPoster.visible = true
+    else if backgroundImage = "custom" then
+        'TODO async loading from removable media, searching for the file
+        'TODO set a diagnostic image URL as the fail-to-load to help user
+        m.BackgroundPoster.uri = "ext1:/background.png"
+        m.BackgroundPoster.visible = true
+    end if
+
     m.LoadingDialog = m.top.findNode("LoadingDialog")
     m.LoadingDialog.title = Tr("Loading Covers")
     m.LoadingDialog.message = Tr("Depends on how many books you have in your library…")

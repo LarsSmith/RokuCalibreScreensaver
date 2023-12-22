@@ -97,6 +97,14 @@
 			<source>{0} pixels tall</source>
 			<target>{0} pixels tall</target>
 		</trans-unit>
+		<trans-unit id="400">
+			<source>Sorting</source>
+			<target>Sorting</target>
+		</trans-unit>
+		<trans-unit id="500">
+			<source>Background Image</source>
+			<target>Background Image</target>
+		</trans-unit>
 	</body>
 </file>
 </xliff>

@@ -6,6 +6,15 @@
     <script type="text/brightscript" uri = "pkg:/components/Utilities.brs"/>
 
     <children>
+        <Poster id = "BackgroundPoster"
+            height = "1080"
+            loadHeight = "1080"
+            width = "1920"
+            loadWidth = "1920"
+            translation = "[0,0]"
+            visible = "false"
+            loadSync = "true"
+        />
         <LayoutGroup id = "CoverRow"
             layoutDirection = "horiz"
             vertAlignment = "top"

@@ -111,3 +111,39 @@ function SetRegistryBookCoverSize(size as string) as void
     section.Write("BookCoverSize", size)
     section.Flush()
 end function
+
+'Sorting
+
+function GetRegistrySorting() as string
+    section = CreateObject("roRegistrySection", "General")
+    if section.Exists("Sorting")
+        return section.Read("Sorting")
+    endif
+    return "random"
+end function
+
+function SetRegistrySorting(sorting as string) as void
+    section = CreateObject("roRegistrySection", "General")
+    section.Write("Sorting", sorting)
+    section.Flush()
+end function
+
+'Background Image
+
+function GetRegistryBackgroundImage() as string
+    section = CreateObject("roRegistrySection", "General")
+    if section.Exists("Background")
+        return section.Read("Background")
+    endif
+    return "gradient"
+end function
+
+function SetRegistryBackgroundImage(backgroundImage as string) as void
+    section = CreateObject("roRegistrySection", "General")
+    section.Write("Background", backgroundImage)
+    section.Flush()
+end function
+
+function GetGradientBackgroundURI()
+    return "pkg:/images/gradient.png"
+end function
