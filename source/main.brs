@@ -3,7 +3,7 @@ sub RunScreenSaver()
     port = createObject("roMessagePort")
     screen.setMessagePort(port)
 
-    screen.createScene("CalibreScreensaver") 'Creates scene ScreensaverFade
+    screen.createScene("CalibreScreensaverScene") 'Creates scene ScreensaverFade
     screen.show()
 
     while(true) 'Uses message port to listen if channel is closed
