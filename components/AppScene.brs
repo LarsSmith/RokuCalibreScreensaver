@@ -10,8 +10,23 @@ function onKeyEvent(key as String, press as Boolean) as Boolean
     if press then
         if key = "options" and m.mode = "screensaver" then
             print "options key pressed"
-            m.top.removeChildIndex(0)
-            m.top.createChild("CalibreScreensaverSettings")
+            m.screenSaver.visible = false
+            m.top.removeChild(m.screenSaver)
+            m.screenSaver = invalid
+            m.top.backExitsScene = false
+            m.settings = m.top.createChild("CalibreScreensaverSettings")
+            m.settings.setFocus(true)
+            m.mode = "settings"
+            handled = true
+        else if key = "back" and m.mode = "settings" then
+            print "returning to screensaver"
+            m.settings.visible = false
+            m.top.removeChild(m.settings)
+            m.settings = invalid
+            m.top.backExitsScene = true
+            m.screenSaver = m.top.createChild("CalibreScreensaver")
+            m.screenSaver.setFocus(true)
+            m.mode = "screensaver"
             handled = true
         end if
     end if
