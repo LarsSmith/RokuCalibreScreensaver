@@ -18,6 +18,6 @@
 APPNAME = CalibreLibraryScreensaver
 VERSION = 1.3
 #APP_CHECK_DISABLED = true
-ZIP_EXCLUDE= -x \*.pkg -x dist\* -x keys\* -x \*/.\* -x Readme.txt -x .vscode\* -x .git\* -x makefile -x app.mk -x packages\*
+ZIP_EXCLUDE= -x \*.pkg -x dist\* -x keys\* -x \*/.\* -x Readme.txt -x .vscode\* -x .git\* -x makefile -x app.mk -x packages\* -x out\*
 
 include ./app.mk
