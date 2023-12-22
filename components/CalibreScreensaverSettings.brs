@@ -1,5 +1,6 @@
 sub init()
-    m.top.backgroundURI = "pkg:/images/icons/shelves-splash-screen-HD.png"
+    m.top.getScene().backgroundURI = "pkg:/images/icons/shelves-splash-screen-HD.png"
+
     screensaverSettings = m.top.findNode("SettingsGroup")
 
     m.SettingsList = m.top.findNode("SettingsList")
@@ -197,7 +198,7 @@ function SelectLibrarySource() as void
         end if
         m.ContentServerAddressDialog.buttons = [Tr("Ok")]
         m.ContentServerAddressDialog.observeField("buttonSelected", "OnContentServerAddressSet")
-        m.top.dialog = m.ContentServerAddressDialog
+        m.top.getScene().dialog = m.ContentServerAddressDialog
     end if
 end function
 
@@ -207,22 +208,22 @@ function OnContentServerAddressSet() as void
     'Setup the ServerFile Task first while we still have the address from the dialog
     m.ServerFileTask = CreateObject("roSGNode", "ServerFileTask")
     m.ServerFileTask.locateLibraryTask = true
-    m.ServerFileTask.serverAddress = m.top.dialog.text
+    m.ServerFileTask.serverAddress = m.top.getScene().dialog.text
     m.ServerFileTask.observeField("state", "OnVerifyServer")
 
     'We cannot open a progress dialog until the current dialog is actually closed
     m.top.observeField("dialog", "OnContentServerAddressDialogClosed")
-    m.top.dialog.close = true
+    m.top.getScene().dialog.close = true
     'Wait for the dialog to close before running the task to verify the server
 end function
 
 function OnContentServerAddressDialogClosed()
-    if m.top.dialog = invalid
+    if m.top.getScene().dialog = invalid
         'Now the keyboard dialog is confirmed as closed. We can open a progress dialog and start the task
         m.top.unobserveField("dialog")
         m.ServerVerificationDialog = CreateObject("roSGNode", "StandardProgressDialog")
         m.ServerVerificationDialog.title = Tr("Verifying server")
-        m.top.dialog = m.ServerVerificationDialog
+        m.top.getScene().dialog = m.ServerVerificationDialog
 
         m.ServerFileTask.control = "run"    
     end if
@@ -232,12 +233,12 @@ function OnVerifyServer()
     if m.ServerFileTask.state = "done" OR m.ServerFileTask.state = "stop"
         'The task is complete. However, we may want to re-display the keyboard dialog. So wait for the progress dialog to close
         m.top.observeField("dialog", "OnServerVerificationDialogClosed")
-        m.top.dialog.close = true
+        m.top.getScene().dialog.close = true
     end if
 end function
 
 function OnServerVerificationDialogClosed()
-    if m.top.dialog = invalid
+    if m.top.getScene().dialog = invalid
         'Now the progress dialog is confirmed as closed, we can process the results of the server verification task
         m.top.unobserveField("dialog")
         if m.ServerFileTask.locateLibraryTaskDone
@@ -255,7 +256,7 @@ function OnServerVerificationDialogClosed()
                                                     Tr("Look under Connect/share in Calibre to ensure the server is running and verify the address")]
             m.ContentServerAddressDialog.buttons = [Tr("Ok")]
             m.ContentServerAddressDialog.observeField("buttonSelected", "OnContentServerAddressSet")                                            
-            m.top.dialog = m.ContentServerAddressDialog
+            m.top.getScene().dialog = m.ContentServerAddressDialog
         end if
     end if
 end function
@@ -294,7 +295,7 @@ function SelectScrollSpeedItem() as void
         m.CustomScrollSpeedDialog.textEditBox.maxTextLength = -1 'avoid displaying underscores which suggest that multiple digits are expected
         m.CustomScrollSpeedDialog.buttons = [Tr("Ok")]
         m.CustomScrollSpeedDialog.observeField("buttonSelected", "OnCustomScrollSpeedSet")
-        m.top.dialog = m.CustomScrollSpeedDialog
+        m.top.getScene().dialog = m.CustomScrollSpeedDialog
     end if
 end function
 
@@ -302,7 +303,7 @@ function OnCustomScrollSpeedSet() as void
     SetRegistryScrollSpeed("custom")
     SetRegistryScrollSpeedCustomSecs(m.CustomScrollSpeedDialog.pin.ToInt())
     'TODO deal with no value set by backing out of the dialog. For now this is handled by the utility returning default if 'custom' is set but no set speed
-    m.top.dialog.close = true
+    m.top.getScene().dialog.close = true
     m.InfoTip.text = Substitute(Tr("{0} seconds per cover"), m.CustomScrollSpeedDialog.pin)
     m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_ScrollSpeed_Custom
     m.InfoTip.visible = true

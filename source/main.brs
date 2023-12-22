@@ -22,7 +22,7 @@ sub RunScreenSaverSettings()
     port = createObject("roMessagePort")
     screen.setMessagePort(port)
 
-    screen.createScene("CalibreScreensaverSettings")
+    screen.createScene("CalibreScreensaverSettingsScene")
     screen.show()
 
     while(true) 'Uses message port to listen if channel is closed

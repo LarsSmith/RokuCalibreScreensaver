@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component name="CalibreScreensaverSettings" extends="Scene" >
+<component name="CalibreScreensaverSettings" extends="group" >
 
     <script type="text/brightscript" uri = "pkg:/components/CalibreScreensaverSettings.brs"/>
     <script type="text/brightscript" uri = "pkg:/components/Utilities.brs"/>
