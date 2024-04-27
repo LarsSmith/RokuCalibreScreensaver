@@ -427,7 +427,7 @@ function FocusSorting() as void
         m.InfoTip.text = Tr("Randomized book order")
         m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_Sorting_Random
     else if m.Sorting.itemFocused = m.ENUM_Sorting_Author then
-        m.InfoTip.text = Tr("Sort based on author name")
+        m.InfoTip.text = Tr("Sort based on author name. This doesn't work well for USB library sources. See https://www.mobileread.com/forums/showthread.php?t=77901")
         m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_Sorting_Author
     else if m.Sorting.itemFocused = m.ENUM_Sorting_Title then
         m.InfoTip.text = Tr("Sort based on book title")
