@@ -53,6 +53,7 @@
 		<trans-unit id="107">
 			<source>Calibre Content Server Address</source>
 			<target>Calibre Content Server Address</target>
+		</trans-unit>
 		<trans-unit id="108">
 			<source>Server not found. Enter an IP address or hostname. For example 192.168.1.5:8080</source>
 			<target>Server not found. Enter an IP address or hostname. For example 192.168.1.5:8080</target>
