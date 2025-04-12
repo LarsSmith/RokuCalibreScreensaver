@@ -139,7 +139,7 @@ else # Linux
 endif
 
 ifndef ZIP_EXCLUDE
-	ZIP_EXCLUDE= -x \*.pkg -x storeassets\* -x keys\* -x \*/.\* $(ZIP_EXCLUDE_LOCAL)
+	ZIP_EXCLUDE= -x \*.pkg -x storeassets\* -x keys\* -x \*/.\* -x .git\* -x .vscode\* -x resize_and_copy_jpgs.py -x out\* -x packages\* -x dist\*  -x makefile -x app.mk -x README.md -x images\gradient.pdn -x images\shelves.jpg $(ZIP_EXCLUDE_LOCAL)
 endif
 
 # -------------------------------------------------------------------------
