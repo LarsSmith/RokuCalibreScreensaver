@@ -22,49 +22,52 @@ function init()
     m.LoadingDialog.title = Tr("Loading Covers")
     m.LoadingDialog.message = Tr("Depends on how many books you have in your library…")
 
-    'Load cover height from registry
+    ' Load cover height from registry
     m.BookCoverSize = GetRegistryBookCoverSize()
     m.COVER_HEIGHT = ConvertBookCoverSizeToPixels(m.BookCoverSize)
     m.TOP_PADDING = (1080 - m.COVER_HEIGHT) / 2
     m.COVER_PADDING = 20
 
-    'Create the structure to hold the covers
+    ' Create the structure to hold the covers
     m.CoverRow = m.top.findNode("CoverRow")
     m.CoverRow.itemSpacings = [m.COVER_PADDING]
     m.CoverRow.translation = [0, m.TOP_PADDING]
     m.CoverRow.addItemSpacingAfterChild = false
 
-    'Create the animation that slides the row of covers to the left
+    ' Create the animation that slides the row of covers to the left
     m.CoverRowAnimation = m.top.findNode("CoverRowAnimation")
     m.CoverRowAnimation.observeField("state", "AnimationComplete")
     m.CoverRowAnimationInterpolator = m.top.findNode("CoverRowAnimationInterpolator")
 
-    'This pending initialization flag allows us to iterative load the cover images and only begin sliding when sufficient images are loaded to fill the screen
+    ' This pending initialization flag allows us to iteratively load the cover images and only begin sliding when sufficient images are loaded to fill the screen
     m.coverInitializationPending = true
 
-    'Read the configured scroll speed from the registry
-    'The actual animation speed in seconds is set for each call to SlideCovers()
+    ' Read the configured scroll speed from the registry
+    ' The actual animation speed in seconds is set for each call to SlideCovers()
     m.ScrollSpeed = GetRegistryScrollSpeed()
 
-    'Determine which library source is configured
+    ' Determine which library source is configured
     LibrarySource = GetRegistryLibrarySource()
     if LibrarySource = "server" 'TODO replace with const
-        'Create the thread that will locate cover jpg files from the Calibre Content Server
+        ' Create the thread that will locate cover jpg files from the Calibre Content Server
         m.ServerFileTask = CreateObject("roSGNode", "ServerFileTask")
         m.ServerFileTask.serverAddress = GetRegistryLibraryAddress()
         m.ServerFileTask.loadCoverImagesTask = true
-        'When the task thread is done, call OnCoverListReadyServer()
+        ' When the task thread is done, call OnCoverListReadyServer()
         m.ServerFileTask.observeField("loadCoverImageTaskDone", "OnCoverListReadyServer")
-        'Start the thread
+        ' Start the thread
         m.ServerFileTask.control = "run" 
     else 'LibrarySource = "usb" or unconfigured
-        'Create the thread that will locate cover jpg files on the memory card
+        ' Create the thread that will locate cover jpg files on the memory card
         m.USBFileTaskTask = CreateObject("roSGNode", "USBFileTask")
-        'When the task thread is done, call OnCoverListReadyUSB()
+        ' When the task thread is done, call OnCoverListReadyUSB()
         m.USBFileTaskTask.observeField("loadCoverImageTaskDone", "OnCoverListReadyUSB")
-        'Start the thread
+        ' Start the thread
         m.USBFileTaskTask.control = "run"
     end if
+
+    ' Observe key events
+    m.top.observeField("keyEvent", "onKeyEventHandler")
 end function
 
 function OnCoverListReadyServer() as void
@@ -266,16 +269,20 @@ function AnimationComplete() as void
     end if
 end function
 
-function onKeyEvent(key as String, press as Boolean) as Boolean
+function onKeyEventHandler(event as Object) as Boolean
+    key = event.key
+    press = event.isPressed
     handled = false
+
     if press then
         if key = "right" then
-            if m.CoverRowAnimation.state = "running" 
+            if m.CoverRowAnimation.state = "running"
                 m.CoverRowAnimation.duration = 0.3
                 m.CoverRowAnimation.control = "pause"
                 handled = true
             end if
         end if
     end if
+
     return handled
 end function

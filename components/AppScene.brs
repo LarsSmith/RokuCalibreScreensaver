@@ -2,11 +2,16 @@ function init()
     m.mode = "screensaver"
     m.screenSaver = m.top.findNode("Screensaver")
     m.screenSaver.setFocus(true)
+
+    ' Observe key events
+    m.top.observeField("keyEvent", "onKeyEventHandler")
 end function
 
-
-function onKeyEvent(key as String, press as Boolean) as Boolean
+function onKeyEventHandler(event as Object)
+    key = event.key
+    press = event.isPressed
     handled = false
+
     if press then
         if key = "options" and m.mode = "screensaver" then
             print "options key pressed"
@@ -30,5 +35,6 @@ function onKeyEvent(key as String, press as Boolean) as Boolean
             handled = true
         end if
     end if
+
     return handled
 end function

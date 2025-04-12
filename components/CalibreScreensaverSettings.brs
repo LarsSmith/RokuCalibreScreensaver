@@ -136,6 +136,10 @@ sub init()
     AboutText = AboutText + Chr(10) + Chr(10) + "https://github.com/LarsSmith/RokuCalibreScreensaver"
     m.About.text = AboutText
 
+    ' Observe key events
+    m.top.observeField("keyEvent", "onKeyEventHandler")
+
+    ' Set initial focus
     m.SettingsList.setFocus(true)
 end sub
 
@@ -198,27 +202,33 @@ function SelectSettingsItem() as void
     end if    
 end function
 
-function onKeyEvent(key as String, press as Boolean) as Boolean
+function onKeyEventHandler(event as Object) as Boolean
+    key = event.key
+    press = event.isPressed
     handled = false
-    if (key = "right") and (press=true) AND (m.SettingsList.hasFocus() = true)
-        if m.SettingsList.itemFocused = m.ENUM_SettingsList_Calibre_Library_Source then
-            m.CalibreLibrarySource.setFocus(true)
-        else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Scroll_Speed then
-            m.ScrollSpeed.setFocus(true)
-        else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Book_Cover_Size then
-            m.BookCoverSize.setFocus(true)
-        else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Sorting then
-            m.Sorting.setFocus(true)
-        else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Background_Image then
-            m.BackgroundImage.setFocus(true)
-        end if 
-	    handled = true
-	else if (key = "left") and (press=true) AND (m.SettingsList.hasFocus() = false)
-        m.InfoTip.visible = false
-		m.SettingsList.setFocus(true)
-	    handled = true
-	endif
-    return handled    
+
+    if press then
+        if (key = "right") and (m.SettingsList.hasFocus() = true) then
+            if m.SettingsList.itemFocused = m.ENUM_SettingsList_Calibre_Library_Source then
+                m.CalibreLibrarySource.setFocus(true)
+            else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Scroll_Speed then
+                m.ScrollSpeed.setFocus(true)
+            else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Book_Cover_Size then
+                m.BookCoverSize.setFocus(true)
+            else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Sorting then
+                m.Sorting.setFocus(true)
+            else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Background_Image then
+                m.BackgroundImage.setFocus(true)
+            end if
+            handled = true
+        else if (key = "left") and (m.SettingsList.hasFocus() = false) then
+            m.InfoTip.visible = false
+            m.SettingsList.setFocus(true)
+            handled = true
+        end if
+    end if
+
+    return handled
 end function
 
 'UI actions for the center column
