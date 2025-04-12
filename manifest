@@ -12,3 +12,5 @@ build_version=0
 ui_resolutions=FHD
 
 screensaver_title=Calibre Library Screensaver
+screensaver_component=CalibreScreensaver
+screensaver_settings_component=CalibreScreensaverSettings

@@ -43,7 +43,6 @@ sub RunScreenSaverSettings()
 
     screen.createScene("CalibreScreensaverSettingsScene")
     screen.show()
-    screen.setFocus(true)
 
     while(true) 'Uses message port to listen if channel is closed
         msg = wait(0, port)
