@@ -1,5 +1,6 @@
 sub init()
-    'm.top.getScene().backgroundURI = "pkg:/images/icons/shelves-splash-screen-HD.png"
+    print "CalibreScreensaverSettings: init() called"
+    'm.top.getScene().backgroundURI = "pkg:/images/splash/shelves-splash-screen-HD.png"
 
     m.SettingsGroup = m.top.findNode("SettingsGroup")
 
@@ -141,6 +142,9 @@ sub init()
 
     ' Set initial focus
     m.SettingsList.setFocus(true)
+
+    print "trying to send signalBeacon AppLaunchComplete from CalibreScreensaverSettings"
+    m.top.signalBeacon("AppLaunchComplete")
 end sub
 
 'UI actions for the left-most column

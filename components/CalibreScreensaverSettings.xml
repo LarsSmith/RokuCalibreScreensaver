@@ -6,7 +6,7 @@
 
     <children>
         <Poster id = "BackgroundPoster"
-            uri = "pkg:/images/icons/shelves-splash-screen-HD.png"
+            uri = "pkg:/images/splash/shelves-splash-screen-HD.png"
             height = "1080"
             loadHeight = "1080"
             width = "1920"

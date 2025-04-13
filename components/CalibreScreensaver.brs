@@ -2,6 +2,8 @@
 'TODO implement sorting options
 
 function init()
+    print "CalibreScreensaver: init() called"
+
     m.BackgroundPoster = m.top.findNode("BackgroundPoster")
     backgroundImage = GetRegistryBackgroundImage()
 
@@ -10,9 +12,9 @@ function init()
     else if backgroundImage = "default" then
         ' Use the default background image
         print "Using default background image"
-        m.BackgroundPoster.uri = "pkg:/images/icons/shelves-splash-screen-HD.png"
-        m.BackgroundPoster.blendColor = "0x888888FF"
-            m.BackgroundPoster.visible = true
+        m.BackgroundPoster.uri = "pkg:/images/splash/shelves-splash-screen-HD.png"
+        m.BackgroundPoster.blendColor = "0xFFFFFF77"
+        m.BackgroundPoster.visible = true
     else if backgroundImage = "custom" then
         ' Load custom background from external storage
         m.BackgroundPoster.uri = "ext1:/background.png"
@@ -39,9 +41,6 @@ function init()
     m.CoverRowAnimation = m.top.findNode("CoverRowAnimation")
     m.CoverRowAnimation.observeField("state", "AnimationComplete")
     m.CoverRowAnimationInterpolator = m.top.findNode("CoverRowAnimationInterpolator")
-
-    ' This pending initialization flag allows us to iteratively load the cover images and only begin sliding when sufficient images are loaded to fill the screen
-    m.coverInitializationPending = true
 
     ' Read the configured scroll speed from the registry
     ' The actual animation speed in seconds is set for each call to SlideCovers()
@@ -206,8 +205,9 @@ function OnCoverImageLoaded()
         end for
         if rightEdge < requiredWidth then 'Needs more covers
             AddCover()
-        else if m.coverInitializationPending 'Still initializing and now has sufficient covers to begin animating
-            m.coverInitializationPending = false
+        else if m.top.coverInitializationPending 'Still initializing but now has sufficient covers to begin animating
+            print "Sufficient covers to fill screen. Starting sliding animation."
+            m.top.coverInitializationPending = false
             SlideCovers()
         else
             'AddCover is complete and there are enough covers

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="CalibreScreensaver" extends="group" >
+    <interface>
+        <field id="coverInitializationPending" type="boolean" value="true"/>
+    </interface>
     
     <!-- CalibreScreensaver contains the primary logic for rendering the screensaver -->
     <script type="text/brightscript" uri = "pkg:/components/CalibreScreensaver.brs"/>

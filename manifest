@@ -5,12 +5,20 @@
 
 ##   Channel Details
 # Most details set in locale/xx_XX/manifest files
+screensaver_title=Calibre Library Screensaver
 major_version=1
 minor_version=3
 build_version=0
 
-ui_resolutions=FHD
+AppLaunchComplete=1
 
-screensaver_title=Calibre Library Screensaver
-screensaver_component=CalibreScreensaver
-screensaver_settings_component=CalibreScreensaverSettings
+ui_resolutions=fhd
+
+#screensaver_component=CalibreScreensaverScene
+#screensaver_settings_component=CalibreScreensaverSettings
+
+#bsprof_enable=1
+#bsprof_data_dest=local
+#rsg_version=1.2
+#bsprof_enable_lines=1
+#bsprof_enable_mem=1

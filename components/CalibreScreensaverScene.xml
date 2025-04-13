@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="CalibreScreensaverScene" extends="Scene">
+    <interface>
+        <field id="onSceneLoaded" type="boolean" />
+    </interface>
+
+    <script type="text/brightscript" uri = "pkg:/components/CalibreScreensaverScene.brs"/>
 
     <children>
         <CalibreScreensaver id = "Screensaver"/>
