@@ -4,16 +4,17 @@
 function init()
     m.BackgroundPoster = m.top.findNode("BackgroundPoster")
     backgroundImage = GetRegistryBackgroundImage()
+
     if backgroundImage = "none" then
         m.BackgroundPoster.visible = false
-    else if backgroundImage = "gradient" then
-        'Use the default gradient from the package
-        m.BackgroundPoster.failedBitmapUri = ""
-        m.BackgroundPoster.uri = "pkg:/images/gradient.png"
-        m.BackgroundPoster.visible = true
+    else if backgroundImage = "default" then
+        ' Use the default background image
+        print "Using default background image"
+        m.BackgroundPoster.uri = "pkg:/images/icons/shelves-splash-screen-HD.png"
+        m.BackgroundPoster.blendColor = "0x888888FF"
+            m.BackgroundPoster.visible = true
     else if backgroundImage = "custom" then
-        'TODO async loading from removable media, searching for the file
-        'TODO set a diagnostic image URL as the fail-to-load to help user
+        ' Load custom background from external storage
         m.BackgroundPoster.uri = "ext1:/background.png"
         m.BackgroundPoster.visible = true
     end if
@@ -285,4 +286,57 @@ function onKeyEventHandler(event as Object) as Boolean
     end if
 
     return handled
+end function
+
+function GenerateGradientBitmap() as String
+    width = 1920
+    height = 1080
+
+    ' Create a blank bitmap
+    bitmap = CreateObject("roBitmap", { width: width, height: height, AlphaEnable: false })
+
+    ' Define the colors
+    topLeftColor = &hF1EDD8
+    bottomLeftColor = &hE2CA9C
+    topRightColor = &h3F4B48
+    bottomRightColor = &h131F24
+
+    ' Loop through each row to draw the gradient
+    for y = 0 to height - 1
+        yFactor = y / (height - 1)
+
+        ' Interpolate colors for the current row
+        leftColor = InterpolateColor(topLeftColor, bottomLeftColor, yFactor)
+        rightColor = InterpolateColor(topRightColor, bottomRightColor, yFactor)
+
+        ' Draw a horizontal line for the current row
+        for x = 0 to width - 1
+            xFactor = x / (width - 1)
+            pixelColor = InterpolateColor(leftColor, rightColor, xFactor)
+            bitmap.drawRect(x, y, 1, 1, pixelColor)
+        end for
+    end for
+
+    ' Save the gradient to a temporary file
+    tempFilePath = "tmp:/gradient.png"
+    bitmap.writeToFile(tempFilePath)
+
+    ' Return the file path
+    return tempFilePath
+end function
+
+function InterpolateColor(color1 as Integer, color2 as Integer, factor as Float) as Integer
+    r1 = (color1 >> 16) and &hFF
+    g1 = (color1 >> 8) and &hFF
+    b1 = color1 and &hFF
+
+    r2 = (color2 >> 16) and &hFF
+    g2 = (color2 >> 8) and &hFF
+    b2 = color2 and &hFF
+
+    r = r1 + (r2 - r1) * factor
+    g = g1 + (g2 - g1) * factor
+    b = b1 + (b2 - b1) * factor
+
+    return (r << 16) or (g << 8) or b
 end function

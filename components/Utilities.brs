@@ -135,15 +135,11 @@ function GetRegistryBackgroundImage() as string
     if section.Exists("Background")
         return section.Read("Background")
     endif
-    return "gradient"
+    return "default"
 end function
 
 function SetRegistryBackgroundImage(backgroundImage as string) as void
     section = CreateObject("roRegistrySection", "General")
     section.Write("Background", backgroundImage)
     section.Flush()
-end function
-
-function GetGradientBackgroundURI()
-    return "pkg:/images/gradient.png"
 end function

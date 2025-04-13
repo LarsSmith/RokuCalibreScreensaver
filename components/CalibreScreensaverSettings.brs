@@ -105,16 +105,16 @@ sub init()
 
     m.BackgroundImage = m.top.findNode("BackgroundImage")
     m.BackgroundImage.content.CreateChild("ContentNode").title = Tr("No Background")
-    m.BackgroundImage.content.CreateChild("ContentNode").title = Tr("Gradient")
+    m.BackgroundImage.content.CreateChild("ContentNode").title = Tr("Default")
     m.BackgroundImage.content.CreateChild("ContentNode").title = Tr("Custom")
     m.ENUM_Background_Image_None = 0
-    m.ENUM_Background_Image_Gradient = 1
+    m.ENUM_Background_Image_Default = 1
     m.ENUM_Background_Image_Custom = 2
     background = GetRegistryBackgroundImage()
     if background = "none"
         m.BackgroundImage.checkedItem = m.ENUM_Background_Image_None
-    else if background = "gradient"
-        m.BackgroundImage.checkedItem = m.ENUM_Background_Image_Gradient
+    else if background = "default"
+        m.BackgroundImage.checkedItem = m.ENUM_Background_Image_Default
     else if background = "custom"
         m.BackgroundImage.checkedItem = m.ENUM_Background_Image_Custom
     end if
@@ -449,8 +449,8 @@ end function
 function SelectBackgroundImage() as void
     if m.BackgroundImage.itemSelected = m.ENUM_Background_Image_None then
         SetRegistryBackgroundImage("none")
-    else if m.BackgroundImage.itemSelected = m.ENUM_Background_Image_Gradient then
-        SetRegistryBackgroundImage("gradient")
+    else if m.BackgroundImage.itemSelected = m.ENUM_Background_Image_Default then
+        SetRegistryBackgroundImage("default")
     else if m.BackgroundImage.itemSelected = m.ENUM_Background_Image_Custom then
         SetRegistryBackgroundImage("custom")
     end if
@@ -460,9 +460,9 @@ function FocusBackgroundImage() as void
     if m.BackgroundImage.itemFocused = m.ENUM_Background_Image_None then
         m.InfoTip.text = Tr("Use no background image")
         m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_Background_Image_None
-    else if m.BackgroundImage.itemFocused = m.ENUM_Background_Image_Gradient then
+    else if m.BackgroundImage.itemFocused = m.ENUM_Background_Image_Default then
         m.InfoTip.text = Tr("Use default background")
-        m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_Background_Image_Gradient
+        m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_Background_Image_Default
     else if m.BackgroundImage.itemFocused = m.ENUM_Background_Image_Custom then
         m.InfoTip.text = Tr("Place custom background image on storage drive as background.png")
         m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_Background_Image_Custom
