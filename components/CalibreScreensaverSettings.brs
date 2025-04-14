@@ -1,6 +1,5 @@
 sub init()
     print "CalibreScreensaverSettings: init() called"
-    'm.top.getScene().backgroundURI = "pkg:/images/splash/shelves-splash-screen-HD.png"
 
     m.SettingsGroup = m.top.findNode("SettingsGroup")
 
@@ -138,7 +137,7 @@ sub init()
     m.About.text = AboutText
 
     ' Observe key events
-    m.top.observeField("keyEvent", "onKeyEventHandler")
+    'm.top.observeField("keyEvent", "onKeyEventHandler")
 
     ' Set initial focus
     m.SettingsList.setFocus(true)
@@ -206,30 +205,26 @@ function SelectSettingsItem() as void
     end if    
 end function
 
-function onKeyEventHandler(event as Object) as Boolean
-    key = event.key
-    press = event.isPressed
+function onKeyEvent(key as String, press as Boolean) as Boolean
     handled = false
 
-    if press then
-        if (key = "right") and (m.SettingsList.hasFocus() = true) then
-            if m.SettingsList.itemFocused = m.ENUM_SettingsList_Calibre_Library_Source then
+    if (key = "right") and (press=true) AND (m.SettingsList.hasFocus() = true)
+        if m.SettingsList.itemFocused = m.ENUM_SettingsList_Calibre_Library_Source then
                 m.CalibreLibrarySource.setFocus(true)
-            else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Scroll_Speed then
-                m.ScrollSpeed.setFocus(true)
-            else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Book_Cover_Size then
-                m.BookCoverSize.setFocus(true)
-            else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Sorting then
-                m.Sorting.setFocus(true)
-            else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Background_Image then
-                m.BackgroundImage.setFocus(true)
-            end if
-            handled = true
-        else if (key = "left") and (m.SettingsList.hasFocus() = false) then
-            m.InfoTip.visible = false
-            m.SettingsList.setFocus(true)
-            handled = true
+        else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Scroll_Speed then
+            m.ScrollSpeed.setFocus(true)
+        else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Book_Cover_Size then
+            m.BookCoverSize.setFocus(true)
+        else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Sorting then
+            m.Sorting.setFocus(true)
+        else if m.SettingsList.itemFocused = m.ENUM_SettingsList_Background_Image then
+            m.BackgroundImage.setFocus(true)
         end if
+        handled = true
+    else if (key = "left") and (press=true) AND (m.SettingsList.hasFocus() = false)
+        m.InfoTip.visible = false
+        m.SettingsList.setFocus(true)
+        handled = true
     end if
 
     return handled
@@ -441,10 +436,10 @@ function FocusSorting() as void
         m.InfoTip.text = Tr("Randomized book order")
         m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_Sorting_Random
     else if m.Sorting.itemFocused = m.ENUM_Sorting_Author then
-        m.InfoTip.text = Tr("Sort based on author name. This doesn't work well for USB library sources. See https://www.mobileread.com/forums/showthread.php?t=77901")
+        m.InfoTip.text = Tr("Sort based on author name. This doesn't work for USB library sources. See https://www.mobileread.com/forums/showthread.php?t=77901")
         m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_Sorting_Author
     else if m.Sorting.itemFocused = m.ENUM_Sorting_Title then
-        m.InfoTip.text = Tr("Sort based on book title")
+        m.InfoTip.text = Tr("Sort based on book title. This doesn't work for USB library sources. See https://www.mobileread.com/forums/showthread.php?t=77901")
         m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_Sorting_Title
     end if
     m.InfoTip.visible = true
