@@ -6,9 +6,8 @@
             "type": "shell",
             "command": "powershell",
             "args": [
-                "-NoExit",
                 "-Command",
-                "$config = Get-Content 'roku-dev-config.json' | ConvertFrom-Json; $env:ROKU_DEV_TARGET = $config.roku_dev_target; make install"
+                "$config = Get-Content roku-dev-config.json | ConvertFrom-Json; $target = $config.roku_dev_target; $password = $config.devpassword; wsl bash -c \"cd /mnt/c/Users/lars_/Documents/Dev/RokuDev/RokuCalibreScreensaver `&`& ROKU_DEV_TARGET=$target DEVPASSWORD=$password make install\""
             ],
             "group": {
                 "kind": "build",
@@ -39,9 +38,8 @@
             "type": "shell",
             "command": "powershell",
             "args": [
-                "-NoExit",
                 "-Command",
-                "$config = Get-Content 'roku-dev-config.json' | ConvertFrom-Json; $env:ROKU_DEV_TARGET = $config.roku_dev_target; make remove"
+                "$config = Get-Content roku-dev-config.json | ConvertFrom-Json; $target = $config.roku_dev_target; $password = $config.devpassword; wsl bash -c \"cd /mnt/c/Users/lars_/Documents/Dev/RokuDev/RokuCalibreScreensaver `&`& ROKU_DEV_TARGET=$target DEVPASSWORD=$password make remove\""
             ],
             "group": "build",
             "presentation": {
