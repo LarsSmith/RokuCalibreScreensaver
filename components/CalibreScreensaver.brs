@@ -1,54 +1,73 @@
 'update readme
-'TODO add background image options
+'TODO implement sorting options
 
 function init()
+    print "CalibreScreensaver: init() called"
+
+    m.BackgroundPoster = m.top.findNode("BackgroundPoster")
+    backgroundImage = GetRegistryBackgroundImage()
+
+    if backgroundImage = "none" then
+        m.BackgroundPoster.visible = false
+    else if backgroundImage = "default" then
+        ' Use the default background image
+        print "Using default background image"
+        m.BackgroundPoster.uri = "pkg:/images/splash/shelves-splash-screen-HD.png"
+        m.BackgroundPoster.blendColor = "0xFFFFFF77"
+        m.BackgroundPoster.visible = true
+    else if backgroundImage = "custom" then
+        ' Load custom background from external storage
+        m.BackgroundPoster.uri = "ext1:/background.png"
+        m.BackgroundPoster.visible = true
+    end if
+
     m.LoadingDialog = m.top.findNode("LoadingDialog")
     m.LoadingDialog.title = Tr("Loading Covers")
     m.LoadingDialog.message = Tr("Depends on how many books you have in your library…")
 
-    'Load cover height from registry
+    ' Load cover height from registry
     m.BookCoverSize = GetRegistryBookCoverSize()
     m.COVER_HEIGHT = ConvertBookCoverSizeToPixels(m.BookCoverSize)
     m.TOP_PADDING = (1080 - m.COVER_HEIGHT) / 2
     m.COVER_PADDING = 20
 
-    'Create the structure to hold the covers
+    ' Create the structure to hold the covers
     m.CoverRow = m.top.findNode("CoverRow")
     m.CoverRow.itemSpacings = [m.COVER_PADDING]
     m.CoverRow.translation = [0, m.TOP_PADDING]
     m.CoverRow.addItemSpacingAfterChild = false
 
-    'Create the animation that slides the row of covers to the left
+    ' Create the animation that slides the row of covers to the left
     m.CoverRowAnimation = m.top.findNode("CoverRowAnimation")
     m.CoverRowAnimation.observeField("state", "AnimationComplete")
     m.CoverRowAnimationInterpolator = m.top.findNode("CoverRowAnimationInterpolator")
 
-    'This pending initialization flag allows us to iterative load the cover images and only begin sliding when sufficient images are loaded to fill the screen
-    m.coverInitializationPending = true
-
-    'Read the configured scroll speed from the registry
-    'The actual animation speed in seconds is set for each call to SlideCovers()
+    ' Read the configured scroll speed from the registry
+    ' The actual animation speed in seconds is set for each call to SlideCovers()
     m.ScrollSpeed = GetRegistryScrollSpeed()
 
-    'Determine which library source is configured
+    ' Determine which library source is configured
     LibrarySource = GetRegistryLibrarySource()
     if LibrarySource = "server" 'TODO replace with const
-        'Create the thread that will locate cover jpg files from the Calibre Content Server
+        ' Create the thread that will locate cover jpg files from the Calibre Content Server
         m.ServerFileTask = CreateObject("roSGNode", "ServerFileTask")
         m.ServerFileTask.serverAddress = GetRegistryLibraryAddress()
         m.ServerFileTask.loadCoverImagesTask = true
-        'When the task thread is done, call OnCoverListReadyServer()
+        ' When the task thread is done, call OnCoverListReadyServer()
         m.ServerFileTask.observeField("loadCoverImageTaskDone", "OnCoverListReadyServer")
-        'Start the thread
+        ' Start the thread
         m.ServerFileTask.control = "run" 
     else 'LibrarySource = "usb" or unconfigured
-        'Create the thread that will locate cover jpg files on the memory card
+        ' Create the thread that will locate cover jpg files on the memory card
         m.USBFileTaskTask = CreateObject("roSGNode", "USBFileTask")
-        'When the task thread is done, call OnCoverListReadyUSB()
+        ' When the task thread is done, call OnCoverListReadyUSB()
         m.USBFileTaskTask.observeField("loadCoverImageTaskDone", "OnCoverListReadyUSB")
-        'Start the thread
+        ' Start the thread
         m.USBFileTaskTask.control = "run"
     end if
+
+    ' Observe key events
+    m.top.observeField("keyEvent", "onKeyEventHandler")
 end function
 
 function OnCoverListReadyServer() as void
@@ -186,8 +205,9 @@ function OnCoverImageLoaded()
         end for
         if rightEdge < requiredWidth then 'Needs more covers
             AddCover()
-        else if m.coverInitializationPending 'Still initializing and now has sufficient covers to begin animating
-            m.coverInitializationPending = false
+        else if m.top.coverInitializationPending 'Still initializing but now has sufficient covers to begin animating
+            print "Sufficient covers to fill screen. Starting sliding animation."
+            m.top.coverInitializationPending = false
             SlideCovers()
         else
             'AddCover is complete and there are enough covers
@@ -234,8 +254,10 @@ function SlideCovers() 'Initializes the animation of the covers sliding
 end function
 
 function AnimationComplete() as void
-    if m.CoverRowAnimation.state <> "stopped" 
+    if m.CoverRowAnimation.state = "running" 
         return
+    else if m.CoverRowAnimation.state = "paused"
+        m.CoverRowAnimation.control = "resume"
     else 'Animation is complete
 
         'Cleanup the leftmost cover (which is now off the left edge of the screen)
@@ -246,4 +268,75 @@ function AnimationComplete() as void
         'And restart the sliding animation
         SlideCovers()
     end if
+end function
+
+function onKeyEventHandler(event as Object) as Boolean
+    key = event.key
+    press = event.isPressed
+    handled = false
+
+    if press then
+        if key = "right" then
+            if m.CoverRowAnimation.state = "running"
+                m.CoverRowAnimation.duration = 0.3
+                m.CoverRowAnimation.control = "pause"
+                handled = true
+            end if
+        end if
+    end if
+
+    return handled
+end function
+
+function GenerateGradientBitmap() as String
+    width = 1920
+    height = 1080
+
+    ' Create a blank bitmap
+    bitmap = CreateObject("roBitmap", { width: width, height: height, AlphaEnable: false })
+
+    ' Define the colors
+    topLeftColor = &hF1EDD8
+    bottomLeftColor = &hE2CA9C
+    topRightColor = &h3F4B48
+    bottomRightColor = &h131F24
+
+    ' Loop through each row to draw the gradient
+    for y = 0 to height - 1
+        yFactor = y / (height - 1)
+
+        ' Interpolate colors for the current row
+        leftColor = InterpolateColor(topLeftColor, bottomLeftColor, yFactor)
+        rightColor = InterpolateColor(topRightColor, bottomRightColor, yFactor)
+
+        ' Draw a horizontal line for the current row
+        for x = 0 to width - 1
+            xFactor = x / (width - 1)
+            pixelColor = InterpolateColor(leftColor, rightColor, xFactor)
+            bitmap.drawRect(x, y, 1, 1, pixelColor)
+        end for
+    end for
+
+    ' Save the gradient to a temporary file
+    tempFilePath = "tmp:/gradient.png"
+    bitmap.writeToFile(tempFilePath)
+
+    ' Return the file path
+    return tempFilePath
+end function
+
+function InterpolateColor(color1 as Integer, color2 as Integer, factor as Float) as Integer
+    r1 = (color1 >> 16) and &hFF
+    g1 = (color1 >> 8) and &hFF
+    b1 = color1 and &hFF
+
+    r2 = (color2 >> 16) and &hFF
+    g2 = (color2 >> 8) and &hFF
+    b2 = color2 and &hFF
+
+    r = r1 + (r2 - r1) * factor
+    g = g1 + (g2 - g1) * factor
+    b = b1 + (b2 - b1) * factor
+
+    return (r << 16) or (g << 8) or b
 end function

@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component name="CalibreScreensaver" extends="Scene" >
+<component name="CalibreScreensaver" extends="group" >
+    <interface>
+        <field id="coverInitializationPending" type="boolean" value="true"/>
+    </interface>
     
     <!-- CalibreScreensaver contains the primary logic for rendering the screensaver -->
     <script type="text/brightscript" uri = "pkg:/components/CalibreScreensaver.brs"/>
     <script type="text/brightscript" uri = "pkg:/components/Utilities.brs"/>
 
-
     <children>
+        <Poster id = "BackgroundPoster"
+            height = "1080"
+            loadHeight = "1080"
+            width = "1920"
+            loadWidth = "1920"
+            translation = "[0,0]"
+            visible = "false"
+            loadSync = "true"
+        />
         <LayoutGroup id = "CoverRow"
             layoutDirection = "horiz"
             vertAlignment = "top"

@@ -1,0 +1,5 @@
+{
+  "roku_dev_target": "192.168.1.100",
+  "devpassword": "myRokuDevPassword",
+  "_comment": "Set roku_dev_target to your Roku device's IP address and devpassword to your Roku dev password. This file should be omitted from source control (.gitignore)."
+}

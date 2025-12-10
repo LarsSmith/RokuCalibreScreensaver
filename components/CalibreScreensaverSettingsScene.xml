@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="CalibreScreensaverSettingsScene" extends="Scene">
+    <script type="text/brightscript" uri = "pkg:/components/CalibreScreensaverSettingsScene.brs"/>
+
+    <interface>
+        <field id="onSceneLoaded" type="boolean" />
+    </interface>
+
+    <children>
+        <CalibreScreensaverSettings id = "Settings"/>
+    </children>
+
+</component>
