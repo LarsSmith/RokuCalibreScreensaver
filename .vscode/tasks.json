@@ -1,0 +1,54 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build and Deploy to Roku",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "$config = Get-Content roku-dev-config.json | ConvertFrom-Json; $target = $config.roku_dev_target; $password = $config.devpassword; wsl bash -c \"cd /mnt/c/Users/lars_/Documents/Dev/RokuDev/RokuCalibreScreensaver `&`& ROKU_DEV_TARGET=$target DEVPASSWORD=$password make install\""
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "focus": true,
+                "echo": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Package Only",
+            "type": "shell",
+            "command": "make",
+            "args": [],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Remove App from Roku",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "$config = Get-Content roku-dev-config.json | ConvertFrom-Json; $target = $config.roku_dev_target; $password = $config.devpassword; wsl bash -c \"cd /mnt/c/Users/lars_/Documents/Dev/RokuDev/RokuCalibreScreensaver `&`& ROKU_DEV_TARGET=$target DEVPASSWORD=$password make remove\""
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "focus": true,
+                "echo": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
