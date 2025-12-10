@@ -95,33 +95,152 @@ def get_all_calibre_libraries_from_gui_json():
     except Exception:
         return []
 
+def find_drive_with_calibre_folder():
+    """Return the first drive (like 'E:') that contains a top-level
+    folder named 'Calibre' (e.g. 'E:\\Calibre'). Returns None if not found.
+    """
+    try:
+        import string
+        for letter in string.ascii_uppercase:
+            path = f"{letter}:\\Calibre"
+            if os.path.exists(path):
+                return f"{letter}:"
+    except Exception:
+        pass
+    return None
+
+def find_drives_with_calibre_folders():
+    """Return a list of drive letters (like ['E:', 'F:']) that contain a
+    top-level 'Calibre' folder. Order A..Z. Empty list if none found.
+    """
+    drives = []
+    try:
+        import string
+        for letter in string.ascii_uppercase:
+            path = f"{letter}:\\Calibre"
+            if os.path.exists(path):
+                drives.append(f"{letter}:")
+    except Exception:
+        pass
+    return drives
+
 if __name__ == "__main__":
-    # Require destination drive letter as first argument
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print("Usage: python resize_and_copy_jpgs.py <destination_drive_letter> [<source_directory>]")
-        print("Example: python resize_and_copy_jpgs.py e: [C:\\Users\\me\\Documents\\Calibre\\Main]")
-        print("Omit <source_directory> to use all Calibre libraries as sources.")
-        sys.exit(1)
-
-    # Accept drive letter with or without colon (e.g., "e" or "e:")
-    drive_letter = sys.argv[1].rstrip(':\\').upper()
-    destination_directory = f"{drive_letter}:\\Calibre"
-
-    # Determine source directories
-    if len(sys.argv) == 3:
-        source_directories = [sys.argv[2]]
+    print("=== Calibre Screensaver Image Resizer ===\n")
+    
+    # Prompt for destination drive letter. Show any drives that already contain
+    # a top-level 'Calibre' folder before asking so the user can choose.
+    detected_drives = find_drives_with_calibre_folders()
+    default_drive = detected_drives[0] if detected_drives else None
+    if detected_drives:
+        print("Detected drives with a top-level 'Calibre' folder:")
+        print('  ' + ', '.join(detected_drives))
+    if default_drive:
+        prompt = f"Enter destination drive letter (e.g., 'e' or 'e:') [default: {default_drive}]: "
     else:
-        source_directories = get_all_calibre_libraries_from_gui_json()
-        if not source_directories:
-            print("Could not determine any source directories from Calibre.")
-            print("Usage: python resize_and_copy_jpgs.py <destination_drive_letter> [<source_directory>]")
-            print("Omit <source_directory> to use all Calibre libraries as sources.")
+        prompt = "Enter destination drive letter (e.g., 'e' or 'e:'): "
+
+    while True:
+        drive_input = input(prompt).strip()
+        if not drive_input and default_drive:
+            # Use the detected default drive
+            drive_letter = default_drive.rstrip(':\\').upper()
+            destination_directory = f"{drive_letter}:\\Calibre"
+            break
+        if drive_input:
+            drive_letter = drive_input.rstrip(':\\').upper()
+            if len(drive_letter) == 1 and drive_letter.isalpha():
+                destination_directory = f"{drive_letter}:\\Calibre"
+                break
+        print("Invalid drive letter. Please try again.")
+    # (Information about detected drives was shown before prompting.)
+    
+    # Prompt for source directories (auto-detect from Calibre if possible)
+    detected_libs = get_all_calibre_libraries_from_gui_json()
+    source_directories = []
+
+    if detected_libs:
+        if len(detected_libs) == 1:
+            lib = detected_libs[0]
+            print(f"\nSource directories:\n1. Use Calibre library detected [default: {lib}]\n2. Specify a single directory")
+            choice = input("\nSelect option (1 or 2) [default: 1]: ").strip()
+            if choice == "2":
+                source_dir = input("Enter source directory path: ").strip()
+                if not os.path.exists(source_dir):
+                    print(f"Error: Directory does not exist: {source_dir}")
+                    sys.exit(1)
+                source_directories = [source_dir]
+            else:
+                source_directories = [lib]
+        else:
+            print("\nDetected Calibre libraries:")
+            for i, lib in enumerate(detected_libs, 1):
+                print(f"  {i}. {lib}")
+            all_option = len(detected_libs) + 1
+            specify_option = len(detected_libs) + 2
+            print(f"  {all_option}. Use all detected libraries [default]")
+            print(f"  {specify_option}. Specify a single directory")
+            choice = input(f"\nSelect option (1-{specify_option}) [default: {all_option}]: ").strip()
+            if choice == "" or choice == str(all_option):
+                source_directories = detected_libs
+            elif choice == str(specify_option):
+                source_dir = input("Enter source directory path: ").strip()
+                if not os.path.exists(source_dir):
+                    print(f"Error: Directory does not exist: {source_dir}")
+                    sys.exit(1)
+                source_directories = [source_dir]
+            else:
+                try:
+                    idx = int(choice) - 1
+                    if 0 <= idx < len(detected_libs):
+                        source_directories = [detected_libs[idx]]
+                    else:
+                        raise ValueError()
+                except Exception:
+                    print("Invalid selection.")
+                    sys.exit(1)
+        print(f"\nUsing {len(source_directories)} source directory(ies).")
+    else:
+        # No detected libraries; fall back to asking for a single directory
+        print("\nNo Calibre libraries detected. Please specify a source directory.")
+        source_dir = input("Enter source directory path: ").strip()
+        if not os.path.exists(source_dir):
+            print(f"Error: Directory does not exist: {source_dir}")
+            sys.exit(1)
+        source_directories = [source_dir]
+    
+    # Confirm before processing. Message varies based on whether destination exists.
+    print(f"\nDestination: {destination_directory}")
+    if os.path.exists(destination_directory):
+        print("This Calibre folder will be used.")
+    else:
+        print("This Calibre folder will be created.")
+    print(f"Source libraries: {len(source_directories)}")
+    confirm = input("\nProceed with processing? [Y/n]: ").strip().lower()
+
+    if confirm not in ('', 'y', 'yes'):
+        print("Cancelled.")
+        sys.exit(0)
+
+    # Ensure top-level destination folder exists. Prompt before creating if missing.
+    if not os.path.exists(destination_directory):
+        # Default to yes when user presses Enter
+        create_confirm = input(f"Destination folder {destination_directory} does not exist. Create it? [Y/n]: ").strip().lower()
+        if create_confirm not in ('', 'y', 'yes'):
+            print("Cancelled.")
+            sys.exit(0)
+        try:
+            os.makedirs(destination_directory, exist_ok=True)
+            print(f"Created destination folder: {destination_directory}")
+        except Exception as e:
+            print(f"Failed to create destination folder {destination_directory}: {e}")
             sys.exit(1)
 
+    # Process libraries
     for source_directory in source_directories:
-        # Use the library directory name as the subdirectory under Calibre
         library_name = os.path.basename(os.path.normpath(source_directory))
         final_destination = os.path.join(destination_directory, library_name)
         print(f"\nProcessing library: {source_directory}")
         print(f"Destination subdirectory: {final_destination}")
         resize_and_copy_jpgs(source_directory, final_destination)
+
+    print("\n=== Complete ===")
