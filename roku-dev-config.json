@@ -1,0 +1,4 @@
+{
+  "roku_dev_target": "192.168.1.100",
+  "_comment": "Set roku_dev_target to your Roku device's IP address. This file should be omitted from source control (.gitignore)."
+}
