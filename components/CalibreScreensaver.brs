@@ -57,6 +57,11 @@ function init()
         m.ServerFileTask.observeField("loadCoverImageTaskDone", "OnCoverListReadyServer")
         ' Start the thread
         m.ServerFileTask.control = "run" 
+    else if LibrarySource = "rokucoverserver"
+        m.RokuCoverServerTask = CreateObject("roSGNode", "RokuCoverServerTask")
+        m.RokuCoverServerTask.serverAddress = GetRegistryRokuCoverServerAddress()
+        m.RokuCoverServerTask.observeField("loadCoverImageTaskDone", "OnRokuCoverListReady")
+        m.RokuCoverServerTask.control = "run"
     else 'LibrarySource = "usb" or unconfigured
         ' Create the thread that will locate cover jpg files on the memory card
         m.USBFileTaskTask = CreateObject("roSGNode", "USBFileTask")
@@ -69,6 +74,16 @@ function init()
     ' Observe key events
     m.top.observeField("keyEvent", "onKeyEventHandler")
 end function
+
+sub OnRokuCoverListReady()
+    m.coverImages = m.RokuCoverServerTask.coverImages
+    m.RokuCoverServerTask = invalid
+    if m.coverImages.Count() = 0
+        LoadSampleCovers()
+        return
+    end if
+    initializeCovers()
+end sub
 
 function OnCoverListReadyServer() as void
     if m.ServerFileTask.coverImages.Count() = 0

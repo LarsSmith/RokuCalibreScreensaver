@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="RokuCoverServerTask" extends="Task">
+    <interface>
+        <field id="serverAddress" type="string" />
+        <field id="coverImages" type="array" />
+        <field id="loadCoverImageTaskDone" type="boolean" value="false" />
+    </interface>
+    <script type="text/brightscript" uri="pkg:/components/RokuCoverServerTask.brs" />
+    <script type="text/brightscript" uri="pkg:/components/Utilities.brs" />
+</component>

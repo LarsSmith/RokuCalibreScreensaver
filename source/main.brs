@@ -12,7 +12,6 @@ sub RunScreenSaver() as void
         if msg <> invalid
             print "Message received: "; type(msg)
             if type(msg) = "roSGScreenEvent"
-                print "roSGScreenEvent received: "; msg.getEvent()
                 if msg.isScreenClosed() then return
             end if
         end if
@@ -32,7 +31,6 @@ sub RunScreenSaverSettings()
         msg = wait(0, port)
         if msg <> invalid
             if type(msg) = "roSGScreenEvent"
-                print "roSGScreenEvent received: "; msg.getEvent()
                 if msg.isScreenClosed() then return
             end if
         end if

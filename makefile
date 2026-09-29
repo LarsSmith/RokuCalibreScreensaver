@@ -17,6 +17,7 @@
 ##########################################################################  
 APPNAME = CalibreLibraryScreensaver
 VERSION = 1.3
+ZIP_EXCLUDE_LOCAL = -x RokuCoverServer\* -x roku-dev-config.json -x roku-dev-configuration.json
 #APP_CHECK_DISABLED = true
 #ZIP_EXCLUDE= -x .git\* -x \*.pkg -x dist\* -x keys\* -x \*/.\* -x Readme.txt -x README.md -x images\gradient.pdn -x images\shelves.jpg -x .vscode\* -x .git\* -x makefile -x app.mk -x packages\* -x out\*
 

@@ -28,6 +28,20 @@ function SetRegistryLibraryAddress(address as string) as void
     section.Flush()
 end function
 
+function GetRegistryRokuCoverServerAddress() as string
+    section = CreateObject("roRegistrySection", "General")
+    if section.Exists("RokuCoverServerAddress")
+        return section.Read("RokuCoverServerAddress")
+    end if
+    return ""
+end function
+
+sub SetRegistryRokuCoverServerAddress(address as string)
+    section = CreateObject("roRegistrySection", "General")
+    section.Write("RokuCoverServerAddress", address)
+    section.Flush()
+end sub
+
 'Scroll Speed
 
 function ConvertScrollSpeedToSeconds(speed as string) as integer
@@ -142,4 +156,14 @@ function SetRegistryBackgroundImage(backgroundImage as string) as void
     section = CreateObject("roRegistrySection", "General")
     section.Write("Background", backgroundImage)
     section.Flush()
+end function
+
+function NormalizeRokuCoverServerAddress(address as string) as string
+    address = address.Trim()
+    if address = "" then return ""
+    if address.Instr(0, "://") = -1 then address = "http://" + address
+    while Right(address, 1) = "/"
+        address = Left(address, Len(address) - 1)
+    end while
+    return address
 end function

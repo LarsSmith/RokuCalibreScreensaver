@@ -30,11 +30,15 @@ sub init()
     m.CalibreLibrarySource = m.top.findNode("CalibreLibrarySource")
     m.CalibreLibrarySource.content.CreateChild("ContentNode").title = Tr("USB Drive")
     m.CalibreLibrarySource.content.CreateChild("ContentNode").title = Tr("Calibre Content Server")
+    m.CalibreLibrarySource.content.CreateChild("ContentNode").title = Tr("RokuCoverServer")
+    m.ENUM_CalibreLibrarySource_RokuCoverServer = 2
     m.ENUM_CalibreLibrarySource_USB = 0
     m.ENUM_CalibreLibrarySource_Server = 1
     librarySource = GetRegistryLibrarySource()
     if librarySource <> invalid and librarySource = "server" 'TODO replace with const
         m.CalibreLibrarySource.checkedItem = m.ENUM_CalibreLibrarySource_Server
+    else if librarySource = "rokucoverserver"
+        m.CalibreLibrarySource.checkedItem = m.ENUM_CalibreLibrarySource_RokuCoverServer
     else 'Either registry is configured for USB Drive OR use the default of USB Drive
         m.CalibreLibrarySource.checkedItem = m.ENUM_CalibreLibrarySource_USB
     end if
@@ -239,7 +243,12 @@ function HideInfoTip() as void 'Hide the InfoTip -- used anytime focus is lost
 end function
 
 function FocusCalibreLibrarySource() as void
-    if m.CalibreLibrarySource.itemFocused = m.ENUM_CalibreLibrarySource_USB then
+    if m.CalibreLibrarySource.itemFocused = m.ENUM_CalibreLibrarySource_RokuCoverServer
+        m.InfoTip.text = GetRegistryRokuCoverServerAddress()
+        if m.InfoTip.text = "" then m.InfoTip.text = Tr("No IP Address set")
+        m.InfoTipPadTop.height = m.BufferRowBase + m.BufferRowHeight * m.ENUM_CalibreLibrarySource_RokuCoverServer
+        m.InfoTip.visible = true
+    else if m.CalibreLibrarySource.itemFocused = m.ENUM_CalibreLibrarySource_USB then
         'Should there just be one task that's reused? A new one for each focus may avoid race conditions
         m.LocateCalibreLibraryTask = CreateObject("roSGNode", "USBFileTask")
         m.LocateCalibreLibraryTask.locateLibraryTask = true
@@ -277,7 +286,9 @@ function USBCalibreLibraryTaskDone() as void
 end function
 
 function SelectLibrarySource() as void
-    if m.CalibreLibrarySource.itemSelected = m.ENUM_CalibreLibrarySource_USB then
+    if m.CalibreLibrarySource.itemSelected = m.ENUM_CalibreLibrarySource_RokuCoverServer
+        ShowRokuCoverAddressDialog(GetRegistryRokuCoverServerAddress(), Tr("Enter the server address, for example http://192.168.1.5:8765"))
+    else if m.CalibreLibrarySource.itemSelected = m.ENUM_CalibreLibrarySource_USB then
         SetRegistryLibrarySource("usb")
     else if m.CalibreLibrarySource.itemSelected = m.ENUM_CalibreLibrarySource_Server then
         'Display the keyboard dialog to get the server address
@@ -292,6 +303,79 @@ function SelectLibrarySource() as void
         m.top.getScene().dialog = m.ContentServerAddressDialog
     end if
 end function
+
+sub ShowRokuCoverAddressDialog(address as string, message as string)
+    m.RokuCoverAddressDialog = CreateObject("roSGNode", "StandardKeyboardDialog")
+    m.RokuCoverAddressDialog.title = Tr("RokuCoverServer Address")
+    m.RokuCoverAddressDialog.text = address
+    m.RokuCoverAddressDialog.message = [message]
+    m.RokuCoverAddressDialog.buttons = [Tr("Ok")]
+    m.RokuCoverAddressDialog.observeField("buttonSelected", "OnRokuCoverAddressSet")
+    m.top.getScene().dialog = m.RokuCoverAddressDialog
+    m.RokuCoverAddressDialog.setFocus(true)
+end sub
+
+sub OnRokuCoverAddressSet()
+    if m.RokuCoverVerificationTask <> invalid then return
+    m.RokuCoverVerificationDialog = m.RokuCoverAddressDialog
+    m.RokuCoverPendingAddress = NormalizeRokuCoverServerAddress(m.RokuCoverAddressDialog.text)
+    m.RokuCoverAddressDialog.text = m.RokuCoverPendingAddress
+    m.RokuCoverVerificationTask = CreateObject("roSGNode", "RokuCoverServerTask")
+    m.RokuCoverVerificationTask.serverAddress = m.RokuCoverPendingAddress
+    m.RokuCoverVerificationTask.observeField("loadCoverImageTaskDone", "OnRokuCoverVerified")
+    ' Bound UI waiting independently of the network task, including DNS and cancellation.
+    m.RokuCoverVerificationTimer = m.top.createChild("Timer")
+    m.RokuCoverVerificationTimer.duration = 12
+    m.RokuCoverVerificationTimer.repeat = false
+    m.RokuCoverVerificationTimer.observeField("fire", "OnRokuCoverVerificationTimeout")
+    m.RokuCoverVerificationTimer.control = "start"
+    m.RokuCoverAddressDialog.message = [Tr("Verifying server")]
+    print "RokuCoverServer: verification started"
+    m.RokuCoverVerificationTask.control = "run"
+end sub
+
+sub OnRokuCoverVerified(event as object)
+    if m.RokuCoverVerificationTask = invalid then return
+    if not event.getRoSGNode().isSameNode(m.RokuCoverVerificationTask) then return
+    FinishRokuCoverVerification(m.RokuCoverVerificationTask.coverImages.Count() > 0)
+end sub
+
+sub OnRokuCoverVerificationTimeout()
+    if m.RokuCoverVerificationTask = invalid then return
+    print "RokuCoverServer: verification timed out"
+    FinishRokuCoverVerification(false)
+end sub
+
+sub FinishRokuCoverVerification(succeeded as boolean)
+    m.RokuCoverVerificationTimer.control = "stop"
+    m.RokuCoverVerificationTimer.unobserveField("fire")
+    m.top.removeChild(m.RokuCoverVerificationTimer)
+    m.RokuCoverVerificationTimer = invalid
+    m.RokuCoverVerificationTask.unobserveField("loadCoverImageTaskDone")
+    m.RokuCoverVerificationTask.control = "stop"
+    m.RokuCoverVerificationTask = invalid
+    currentDialog = m.top.getScene().dialog
+    isCurrentDialog = false
+    if currentDialog <> invalid
+        isCurrentDialog = currentDialog.isSameNode(m.RokuCoverVerificationDialog)
+    end if
+    if isCurrentDialog
+        if succeeded
+            SetRegistryRokuCoverServerAddress(m.RokuCoverPendingAddress)
+            SetRegistryLibrarySource("rokucoverserver")
+            m.CalibreLibrarySource.checkedItem = m.ENUM_CalibreLibrarySource_RokuCoverServer
+            m.InfoTip.text = m.RokuCoverPendingAddress
+            m.RokuCoverVerificationDialog.close = true
+            m.CalibreLibrarySource.setFocus(true)
+            print "RokuCoverServer: verification succeeded"
+        else
+            ' A fresh dialog resets the selected button and restores keyboard focus for retry.
+            ShowRokuCoverAddressDialog(m.RokuCoverPendingAddress, Tr("Could not load covers. Check the server address and that /catalog.json contains books."))
+            print "RokuCoverServer: verification failed; address entry restored"
+        end if
+    end if
+    m.RokuCoverVerificationDialog = invalid
+end sub
 
 function OnContentServerAddressSet() as void
     'TODO address verification - show error for invalid address formats and don't close

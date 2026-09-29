@@ -62,6 +62,22 @@
 			<source>No IP Address set</source>
 			<target>No IP Address set</target>
 		</trans-unit>
+		<trans-unit id="110">
+			<source>RokuCoverServer</source>
+			<target>RokuCoverServer</target>
+		</trans-unit>
+		<trans-unit id="111">
+			<source>RokuCoverServer Address</source>
+			<target>RokuCoverServer Address</target>
+		</trans-unit>
+		<trans-unit id="112">
+			<source>Enter the server address, for example http://192.168.1.5:8765</source>
+			<target>Enter the server address, for example http://192.168.1.5:8765</target>
+		</trans-unit>
+		<trans-unit id="113">
+			<source>Could not load covers. Check the server address and that /catalog.json contains books.</source>
+			<target>Could not load covers. Check the server address and that /catalog.json contains books.</target>
+		</trans-unit>
 		<trans-unit id="200">
 			<source>Scroll Speed</source>
 			<target>Scroll Speed</target>
